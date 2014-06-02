@@ -1,4 +1,4 @@
-package com.vds.Bases;
+package com.vds.bases;
 
 import android.app.Activity;
 import android.os.Bundle;
