@@ -7,14 +7,18 @@ package com.vds.bases;
 import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.charset.Charset;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+import java.nio.charset.Charset;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import au.com.bytecode.opencsv.CSVReader;
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.RuntimeExceptionDao;
@@ -52,7 +56,17 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db, ConnectionSource connectionSource) {
         try {
+            //We download and unzip the db files:
             download();
+
+            //FOr each table, we parse the file:
+            List<String[]> res = parse(basePath+"TF_Films.txt");
+
+            for(int i=0; i < res.size(); i++) {
+                for(int j=0; j < res.get(i).length; j++)
+                    Log.v("INFO", res.get(i)[j]);
+            }
+
             Log.i(DatabaseHelper.class.getName(), "onCreate");
 
             //Creating Film table
@@ -171,5 +185,24 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
         } catch (ZipException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Parse CSV file using OpenCSV
+     */
+    private List<String[]> parse(String path) {
+        List<String[]> entries = null;
+        CSVReader reader = null;
+
+        try {
+            reader = new CSVReader(new InputStreamReader(new FileInputStream(path), "ISO-8859-1"), ';', '"');
+            entries = reader.readAll();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return entries;
     }
 }
