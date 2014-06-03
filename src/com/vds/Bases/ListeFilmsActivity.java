@@ -47,7 +47,7 @@ public class ListeFilmsActivity extends OrmLiteBaseActivity<DatabaseHelper> {
         int simpleC = 0;
         for (Film simple : list) {
             sb.append("------------------------------------------\n");
-            sb.append("[").append(simpleC).append("] = ").append(simple).append("\n");
+            sb.append(simple.getTitle()).append("\n");
             simpleC++;
         }
         sb.append("------------------------------------------\n");

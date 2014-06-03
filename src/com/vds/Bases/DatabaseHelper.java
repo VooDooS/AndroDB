@@ -59,31 +59,29 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
             //We download and unzip the db files:
             download();
 
-            //FOr each table, we parse the file:
+            //For each table, we parse the file and fill the database:
             List<String[]> res = parse(basePath+"TF_Films.txt");
 
-            for(int i=0; i < res.size(); i++) {
-                for(int j=0; j < res.get(i).length; j++)
-                    Log.v("INFO", res.get(i)[j]);
-            }
-
-            Log.i(DatabaseHelper.class.getName(), "onCreate");
 
             //Creating Film table
             TableUtils.createTable(connectionSource, Film.class);
+            RuntimeExceptionDao<Film, Integer> dao = getFilmDao();
+            for(int i=0; i < res.size(); i++) {
+                try {
+                    int date = Integer.parseInt(res.get(i)[4]);
+                    Film f = new Film(Integer.parseInt(res.get(i)[0]), Integer.parseInt(res.get(i)[1]), Integer.parseInt(res.get(i)[5]), date,  Integer.parseInt(res.get(i)[3]),  res.get(i)[2],  res.get(i)[6]);
+                    dao.create(f);
+                } catch (NumberFormatException e) {}
+                //Log.i(DatabaseHelper.class.getName(), "onCreate"+Integer.parseInt(res.get(i)[0])+Integer.parseInt(res.get(i)[1])+Integer.parseInt(res.get(i)[5])+Integer.parseInt(res.get(i)[4])+Integer.parseInt(res.get(i)[3])+res.get(i)[2]+res.get(i)[6]);
+
+            }
+
+
+
         } catch (SQLException e) {
             Log.e(DatabaseHelper.class.getName(), "Can't create database", e);
             throw new RuntimeException(e);
         }
-
-// here we try inserting data in the on-create as a test
-        RuntimeExceptionDao<Film, Integer> dao = getFilmDao();
-        long millis = System.currentTimeMillis();
-        int real = 1, id = 2, date = 2653;
-        String t = "totofilm";
-        Film simple = new Film(id, real, real, real, date, t);
-        dao.create(simple);
-        Log.i(DatabaseHelper.class.getName(), "created new entries in onCreate");
     }
 
     /**
@@ -151,16 +149,16 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
         try {
             URL url = new URL("http://u31.fr/db.zip");
-            URLConnection conexion = url.openConnection();
-            conexion.connect();
+            URLConnection connexion = url.openConnection();
+            connexion.connect();
 
-            int lenghtOfFile = conexion.getContentLength();
+            int lenghtOfFile = connexion.getContentLength();
             Log.d("ANDRO_ASYNC", "Lenght of file: " + lenghtOfFile);
 
             InputStream input = new BufferedInputStream(url.openStream());
             OutputStream output = new FileOutputStream(basePath+fileName);
             ZipInputStream zipInputStream = new ZipInputStream(
-                    conexion.getInputStream());
+                    connexion.getInputStream());
             byte data[] = new byte[1024];
 
             while ((count = input.read(data)) != -1) {
@@ -176,7 +174,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     }
 
     /**
-     * Unzip it, using zip4j
+     * Unzip, using zip4j
      */
     private void unzip(String path) {
         try {
