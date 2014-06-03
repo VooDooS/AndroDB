@@ -7,12 +7,9 @@ package com.vds.bases;
 import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
-import java.nio.charset.Charset;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
-import java.nio.charset.Charset;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
@@ -24,7 +21,7 @@ import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.RuntimeExceptionDao;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
-import com.vds.bases.com.vds.bases.entities.Film;
+import com.vds.bases.entities.Film;
 import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
 

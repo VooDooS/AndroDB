@@ -2,7 +2,7 @@
 # generated on 2014/06/03 12:46:24
 #
 # --table-start--
-dataClass=com.vds.bases.com.vds.bases.entities.Film
+dataClass=com.vds.bases.entities.Film
 tableName=films
 # --table-fields-start--
 # --field-start--

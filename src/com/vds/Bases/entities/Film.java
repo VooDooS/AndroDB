@@ -1,4 +1,4 @@
-package com.vds.bases.com.vds.bases.entities;
+package com.vds.bases.entities;
 
 
 import com.j256.ormlite.field.DatabaseField;

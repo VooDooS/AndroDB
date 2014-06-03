@@ -4,13 +4,12 @@ package com.vds.bases;
  * Created by Ulysse on 02/06/2014.
  */
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
 import com.j256.ormlite.android.apptools.OrmLiteBaseActivity;
 import com.j256.ormlite.dao.RuntimeExceptionDao;
-import com.vds.bases.com.vds.bases.entities.Film;
+import com.vds.bases.entities.Film;
 
 import java.util.List;
 
