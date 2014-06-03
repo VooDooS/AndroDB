@@ -4,19 +4,25 @@ package com.vds.bases;
  * Created by Ulysse on 02/06/2014.
  */
 
+import java.io.*;
+import java.net.URL;
+import java.net.URLConnection;
 import java.sql.SQLException;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
-import com.j256.ormlite.android.apptools.OrmLiteConfigUtil;
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.RuntimeExceptionDao;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import com.vds.bases.com.vds.bases.entities.Film;
+import net.lingala.zip4j.core.ZipFile;
+import net.lingala.zip4j.exception.ZipException;
 
 /**
  * Database helper class used to manage the creation and upgrading of the database.
@@ -32,6 +38,10 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     private Dao<Film, Integer> simpleDao = null;
     private RuntimeExceptionDao<Film, Integer> simpleRuntimeDao = null;
 
+    //Paths for zip download and extracting:
+    private final String basePath = "/sdcard/";
+    private final String fileName = "db.zip";
+
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION, R.raw.ormlite_config);
     }
@@ -42,6 +52,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db, ConnectionSource connectionSource) {
         try {
+            download();
             Log.i(DatabaseHelper.class.getName(), "onCreate");
 
             //Creating Film table
@@ -107,5 +118,58 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
         super.close();
         simpleDao = null;
         simpleRuntimeDao = null;
+    }
+
+    // Reads an InputStream and converts it to a String.
+    public String readIt(InputStream stream, int len) throws IOException, UnsupportedEncodingException {
+        Reader reader = null;
+        reader = new InputStreamReader(stream, "UTF-8");
+        char[] buffer = new char[len];
+        reader.read(buffer);
+        return new String(buffer);
+    }
+
+    /**
+     * Download the latest db from u31.fr
+     */
+    private void download() {
+        int count;
+
+        try {
+            URL url = new URL("http://u31.fr/db.zip");
+            URLConnection conexion = url.openConnection();
+            conexion.connect();
+
+            int lenghtOfFile = conexion.getContentLength();
+            Log.d("ANDRO_ASYNC", "Lenght of file: " + lenghtOfFile);
+
+            InputStream input = new BufferedInputStream(url.openStream());
+            OutputStream output = new FileOutputStream(basePath+fileName);
+            ZipInputStream zipInputStream = new ZipInputStream(
+                    conexion.getInputStream());
+            byte data[] = new byte[1024];
+
+            while ((count = input.read(data)) != -1) {
+                output.write(data, 0, count);
+            }
+
+            output.flush();
+            output.close();
+            input.close();
+        } catch (Exception e) {}
+
+        unzip(basePath+fileName);
+    }
+
+    /**
+     * Unzip it, using zip4j
+     */
+    private void unzip(String path) {
+        try {
+            ZipFile zipFile = new ZipFile(path);
+            zipFile.extractAll(basePath);
+        } catch (ZipException e) {
+            e.printStackTrace();
+        }
     }
 }
