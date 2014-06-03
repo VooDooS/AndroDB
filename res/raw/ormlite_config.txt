@@ -1,9 +1,9 @@
 #
-# generated on 2014/06/02 11:42:03
+# generated on 2014/06/03 12:46:24
 #
 # --table-start--
 dataClass=com.vds.bases.com.vds.bases.entities.Film
-tableName=accounts
+tableName=films
 # --table-fields-start--
 # --field-start--
 fieldName=id
