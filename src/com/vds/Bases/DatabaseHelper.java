@@ -21,6 +21,7 @@ import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.RuntimeExceptionDao;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
+import com.vds.bases.entities.Acteur;
 import com.vds.bases.entities.Film;
 import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
@@ -60,7 +61,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
             List<String[]> res = parse(basePath+"TF_Films.txt");
 
 
-            //Creating Film table
+            //Creating Films table
             TableUtils.createTable(connectionSource, Film.class);
             RuntimeExceptionDao<Film, Integer> dao = getFilmDao();
             for(int i=0; i < res.size(); i++) {
@@ -72,6 +73,9 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
                 //Log.i(DatabaseHelper.class.getName(), "onCreate"+Integer.parseInt(res.get(i)[0])+Integer.parseInt(res.get(i)[1])+Integer.parseInt(res.get(i)[5])+Integer.parseInt(res.get(i)[4])+Integer.parseInt(res.get(i)[3])+res.get(i)[2]+res.get(i)[6]);
 
             }
+
+            //Creating Acteurs table
+            TableUtils.createTable(connectionSource, Acteur.class);
 
 
 
